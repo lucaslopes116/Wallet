@@ -13,9 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Stock {
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  wallets  Wallet[] // Um usuário pode ter várias carteiras
+}
+
+model Wallet {
+  id       Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) // Data de criação da carteira
+  userId   Int
+  user     User      @relation(fields: [userId], references: [id])
+  holdings Holding[] // Cada carteira pode ter vários ativos
+}
+
+model Holding {
   id        Int      @id @default(autoincrement())
-  ticker    String   @unique
-  price     Float?
-  createdAt DateTime @default(now())
+  ticker    String   // Código da ação, ETF ou FII
+  price     Float    // Preço atual do ativo
+  quantity  Float    // Quantidade do ativo na carteira
+  updatedAt DateTime @updatedAt // Data da última atualização automática
+  walletId  Int
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
 }
