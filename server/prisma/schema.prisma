@@ -36,4 +36,15 @@ model Holding {
   updatedAt DateTime @updatedAt // Data da última atualização automática
   walletId  Int
   wallet    Wallet   @relation(fields: [walletId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         Int       @id @default(autoincrement())
+  type       String    // 'BUY' ou 'SELL'
+  quantity   Float     // Quantidade comprada ou vendida
+  price      Float     // Preço por unidade na transação
+  date       DateTime  @default(now())
+  holdingId  Int
+  holding    Holding   @relation(fields: [holdingId], references: [id])
 }
