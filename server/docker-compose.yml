@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Monta o código-fonte na pasta /app para que alterações sejam detectadas
+    volumes:
+      - .:/app
+      # Evita sobrescrever a pasta node_modules já instalada no container
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      # Exemplo de conexão para o Prisma:
+      # Ajuste usuário, senha, nome do banco e schema conforme sua configuração
+      DATABASE_URL: "postgresql://user:password@db:5432/stock-db?schema=public"
+      CHOKIDAR_INTERVAL: "100" 
+      CHOKIDAR_USEPOLLING: "true"  # Força o polling para detectar alterações
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: stock
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

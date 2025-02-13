@@ -1,0 +1,18 @@
+# Use a imagem Node.js 18 baseada no Alpine para uma imagem leve
+FROM node:18-alpine
+
+# Define o diretório de trabalho no container
+WORKDIR /app
+
+# Copia os arquivos de dependências e instala as dependências
+COPY package*.json ./
+RUN npm install
+
+# Copia o restante do código da aplicação para o container
+COPY . .
+
+# Exponha a porta que o NestJS utiliza (geralmente 3000)
+EXPOSE 3000
+
+# Inicia a aplicação em modo de desenvolvimento com hot reload
+CMD ["npm", "run", "start:dev"]
